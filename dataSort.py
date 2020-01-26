@@ -6,7 +6,7 @@ import sqlUpdater
 
 
 
-def sortBuys(conn,url):
+def sortData(conn,tableName,url):
 
     response = requests.get(url)
 
@@ -14,10 +14,11 @@ def sortBuys(conn,url):
 
     for index in response.json():
         id = index['order_id']
-        print(id)
+        print("Inputting: " + str(id))
         data[id] = []
         data[id].append({
             'duration':index['duration'],
+            'is_buy_order':index['is_buy_order'],
             'issued':index['issued'],
             'location_id':index['location_id'],
             'min_volume':index['min_volume'],
@@ -29,10 +30,10 @@ def sortBuys(conn,url):
             'volume_total':index['volume_total']
             })
         
-        values = (index['order_id'],index['issued'],index['location_id'],index['min_volume'],
+        values = (index['order_id'],index['is_buy_order'], index['issued'],index['location_id'],index['min_volume'],
                     index['price'],index['range'],index['system_id'],index['type_id'],
                     index['volume_remain'],index['volume_total'])
-        conn.sqlLoadData(values)
+        conn.sqlLoadData(values, tableName)
 
     file = open("D:\\Code\\EveFinance\\buyOrders.json","w")
     jsonString = json.dump(data,file)
@@ -48,6 +49,7 @@ def sortSells(conn, url):
         data[id] = []
         data[id].append({
             'duration':index['duration'],
+            'is_buy_order':index['is_buy_order'],
             'issued':index['issued'],
             'location_id':index['location_id'],
             'min_volume':index['min_volume'],
@@ -70,8 +72,10 @@ def sortSells(conn, url):
 #---------------------------------------------------------------------------
 
 sql = sqlUpdater.sqlCommands("D:\\Code\\EveFinance\\testing2.db")
-sql.createSqlTable()
-buyCheck = sortBuys(sql,"https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=buy&page=1&type_id=34")
-sellCheck = sortSells(sql,"https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=sell&page=1&type_id=34")
+sql.createSqlTable("trialBuy")
+buyCheck = sortData(sql,"trialBuy","https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=buy&page=1&type_id=34")
+sql.createSqlTable("trialSell")
+sellCheck = sortData(sql,"trialSell","https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=sell&page=1&type_id=34")
 print(buyCheck)
 print(sellCheck)
+sql.sqlCloseConnection()

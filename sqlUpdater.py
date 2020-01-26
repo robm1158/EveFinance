@@ -9,12 +9,13 @@ class sqlCommands:
         self.crsr = self.connection.cursor()
         print("Finished sql Setup: connected to " + self.dataBase)
 
-    def createSqlTable(self):
+    def createSqlTable(self,tableName):
         try:
-            createTable = """ CREATE TABLE buys(
+            createTable = """ CREATE TABLE """ + tableName +"""(
                 key INTEGER PRIMARY KEY AUTOINCREMENT,
                 order_id DOUBLE,
-                date VARCHAR(25),
+                is_buy_order BOOLEAN,
+                time VARCHAR(25),
                 location_id DOUBLE,
                 min_volume INTEGER,
                 price DOUBLE,
@@ -25,21 +26,27 @@ class sqlCommands:
                 volume_total DOUBLE
             );"""
             
-            print("Created Table")
+            print("Created Table " + tableName)
             self.crsr.execute(createTable)
         except:
             print("Table Existis Continue")
 
-    def sqlLoadData(self,values):
+    def sqlLoadData(self,values,tableName):
         try:
-            command = ''' INSERT INTO buys(order_id, date, location_id, min_volume,
+            command = ''' INSERT INTO ''' + tableName + '''(order_id, is_buy_order, time, location_id, min_volume,
                             price, range, system_id, type_id, volume_remains, volume_total)
-                            VALUES(?,?,?,?,?,?,?,?,?,?) '''
+                            VALUES(?,?,?,?,?,?,?,?,?,?,?) '''
             self.crsr.execute(command,values)
             self.connection.commit()
-            print(self.crsr.lastrowid)
         except Exception as e:
             print(str(e))
+    
+    def sqlCloseConnection(self):
+        try:
+            self.connection.close()
+            print("Connection closed")
+        except:
+            print("Could not close connection")
 
 
 
