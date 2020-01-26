@@ -5,6 +5,12 @@ import sys
 import sqlUpdater
 
 
+# Sort data from eve ESI. Takes in an sql connection and ESI url.
+# Will create a dictionary/json of data with the order id as the Key
+# will then pass data in per order into an sql load function to load 
+# into a given data base.
+# for /market/{region_id}/orders/
+# Ex) https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=buy&page=1&type_id=34
 
 def sortData(conn,tableName,url):
 
@@ -39,32 +45,6 @@ def sortData(conn,tableName,url):
     jsonString = json.dump(data,file)
     return("Finished Sorting Buys")
 
-def sortSells(conn, url):
-    response = requests.get(url)
-
-    data = {}
-
-    for index in response.json():
-        id = index['order_id']
-        data[id] = []
-        data[id].append({
-            'duration':index['duration'],
-            'is_buy_order':index['is_buy_order'],
-            'issued':index['issued'],
-            'location_id':index['location_id'],
-            'min_volume':index['min_volume'],
-            'price':index['price'],
-            'range':index['range'],
-            'system_id':index['system_id'],
-            'type_id':index['type_id'],
-            'volume_remain':index['volume_remain'],
-            'volume_total':index['volume_total']
-            })
-        
-
-    file = open("D:\\Code\\EveFinance\\sellOrders.json","w")
-    jsonString = json.dump(data,file)
-    return("Finished Sorting Sells")
 
 
 

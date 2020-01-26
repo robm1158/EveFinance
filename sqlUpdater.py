@@ -1,13 +1,20 @@
 import sqlite3 as sql
 import os.path
 
+# This class maintains all commands to run sql for the dataSort file
 class sqlCommands:
+
+    # Upon instantiating the class the intit will setup the connection
+    # and cursor for all following sql commands.
 
     def __init__(self,dataBase):
         self.dataBase = dataBase
         self.connection = sql.connect(self.dataBase)
         self.crsr = self.connection.cursor()
         print("Finished sql Setup: connected to " + self.dataBase)
+
+    # This method will use the class vars to create a table determined by the
+    # dataSort file. Modular enough to create any table in the DB that is required
 
     def createSqlTable(self,tableName):
         try:
@@ -30,6 +37,9 @@ class sqlCommands:
             self.crsr.execute(createTable)
         except:
             print("Table Existis Continue")
+    
+    # This method is used in dataSort to insert puleld esi data
+    # into the created DB. Again uses class vars to run commands
 
     def sqlLoadData(self,values,tableName):
         try:
@@ -40,6 +50,8 @@ class sqlCommands:
             self.connection.commit()
         except Exception as e:
             print(str(e))
+    
+    # This method is used to close the sql connection
     
     def sqlCloseConnection(self):
         try:
