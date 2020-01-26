@@ -5,17 +5,14 @@ class sqlCommands:
 
     def __init__(self,dataBase):
         self.dataBase = dataBase
-        if os.path.isfile(self.dataBase):
-            print("Finished sql Setup: connected to " + self.dataBase)
-        else:
-            self.connection = sql.connect(self.dataBase)
-            self.crsr = self.connection.cursor()
-            print("Finished sql Setup: connected to " + self.dataBase)
+        self.connection = sql.connect(self.dataBase)
+        self.crsr = self.connection.cursor()
+        print("Finished sql Setup: connected to " + self.dataBase)
 
     def createSqlTable(self):
         try:
             createTable = """ CREATE TABLE buys(
-                key int IDENTITY (1,1) NOT NULL PRIMARY KEY,
+                key INTEGER PRIMARY KEY AUTOINCREMENT,
                 order_id DOUBLE,
                 date VARCHAR(25),
                 location_id DOUBLE,
@@ -34,10 +31,16 @@ class sqlCommands:
             print("Table Existis Continue")
 
     def sqlLoadData(self,values):
-        command = ''' INSERT into buys(order_id, date, location_id, min_volume,
-                        price, range, system_id, type_id, volume_remains, volume_total
-                        VALUES(?,?,?,?,?,?,?,?,?,?))'''
-        self.crsr.execute(command,values)
+        try:
+            command = ''' INSERT INTO buys(order_id, date, location_id, min_volume,
+                            price, range, system_id, type_id, volume_remains, volume_total)
+                            VALUES(?,?,?,?,?,?,?,?,?,?) '''
+            self.crsr.execute(command,values)
+            self.connection.commit()
+            print(self.crsr.lastrowid)
+        except Exception as e:
+            print(str(e))
+
 
 
 

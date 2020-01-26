@@ -14,6 +14,7 @@ def sortBuys(conn,url):
 
     for index in response.json():
         id = index['order_id']
+        print(id)
         data[id] = []
         data[id].append({
             'duration':index['duration'],
@@ -28,7 +29,7 @@ def sortBuys(conn,url):
             'volume_total':index['volume_total']
             })
         
-        values = (data[id],index['issued'],index['location_id'],index['min_volume'],
+        values = (index['order_id'],index['issued'],index['location_id'],index['min_volume'],
                     index['price'],index['range'],index['system_id'],index['type_id'],
                     index['volume_remain'],index['volume_total'])
         conn.sqlLoadData(values)
