@@ -38,17 +38,17 @@ class sqlCommands:
             print("Created Table " + tableName)
             self.crsr.execute(createTable)
         except:
-            print("Table Existis Continue")
+            print("Table Exists Continue")
     
     # This method is used in dataSort to insert puleld esi data
     # into the created DB. Again uses class vars to run commands
 
     def sqlLoadData(self,values,tableName):
         try:
-            command = ''' INSERT INTO ''' + tableName + '''(order_id, is_buy_order, time, location_id, min_volume,
+            loadData = ''' INSERT INTO ''' + tableName + '''(order_id, is_buy_order, time, location_id, min_volume,
                             price, range, system_id, type_id, volume_remains, volume_total)
                             VALUES(?,?,?,?,?,?,?,?,?,?,?) '''
-            self.crsr.execute(command,values)
+            self.crsr.execute(loadData,values)
             self.connection.commit()
         except Exception as e:
             print(str(e))
