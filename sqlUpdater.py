@@ -3,7 +3,11 @@
 import sqlite3 as sql
 import os.path
 
+# This class maintains all commands to run sql for the dataSort file
 class sqlCommands:
+
+    # Upon instantiating the class the intit will setup the connection
+    # and cursor for all following sql commands.
 
     def __init__(self,dataBase):
         self.dataBase = dataBase
@@ -11,12 +15,16 @@ class sqlCommands:
         self.crsr = self.connection.cursor()
         print("Finished sql Setup: connected to " + self.dataBase)
 
-    def createSqlTable(self):
+    # This method will use the class vars to create a table determined by the
+    # dataSort file. Modular enough to create any table in the DB that is required
+
+    def createSqlTable(self,tableName):
         try:
-            createTable = """ CREATE TABLE buys(
+            createTable = """ CREATE TABLE """ + tableName +"""(
                 key INTEGER PRIMARY KEY AUTOINCREMENT,
                 order_id DOUBLE,
-                date VARCHAR(25),
+                is_buy_order BOOLEAN,
+                time VARCHAR(25),
                 location_id DOUBLE,
                 min_volume INTEGER,
                 price DOUBLE,
@@ -27,21 +35,32 @@ class sqlCommands:
                 volume_total DOUBLE
             );"""
             
-            print("Created Table")
+            print("Created Table " + tableName)
             self.crsr.execute(createTable)
         except:
-            print("Table Exists, Continue")
+            print("Table Existis Continue")
+    
+    # This method is used in dataSort to insert puleld esi data
+    # into the created DB. Again uses class vars to run commands
 
-    def sqlLoadData(self,values):
+    def sqlLoadData(self,values,tableName):
         try:
-            loadData = ''' INSERT INTO buys(order_id, date, location_id, min_volume,
+            command = ''' INSERT INTO ''' + tableName + '''(order_id, is_buy_order, time, location_id, min_volume,
                             price, range, system_id, type_id, volume_remains, volume_total)
-                            VALUES(?,?,?,?,?,?,?,?,?,?) '''
-            self.crsr.execute(loadData,values)
+                            VALUES(?,?,?,?,?,?,?,?,?,?,?) '''
+            self.crsr.execute(command,values)
             self.connection.commit()
-            print(self.crsr.lastrowid)
         except Exception as e:
             print(str(e))
+    
+    # This method is used to close the sql connection
+    
+    def sqlCloseConnection(self):
+        try:
+            self.connection.close()
+            print("Connection closed")
+        except:
+            print("Could not close connection")
 
 
 
