@@ -1,12 +1,15 @@
 # Author: Rob Mullins 
+# Co-Author: Hunter McCraw
 # Purpose: Tool aspect of project
+# ---------------------------------
+
 import sqlite3 as sql
 import os.path
 
 # This class maintains all commands to run sql for the dataSort file
 class sqlCommands:
 
-    # Upon instantiating the class the intit will setup the connection
+    # Upon instantiating the class the init will setup the connection
     # and cursor for all following sql commands.
 
     def __init__(self,dataBase):
@@ -40,7 +43,7 @@ class sqlCommands:
         except:
             print("Table Exists Continue")
     
-    # This method is used in dataSort to insert puleld esi data
+    # This method is used in dataSort to insert pulled esi data
     # into the created DB. Again uses class vars to run commands
 
     def sqlLoadData(self,values,tableName):
@@ -53,6 +56,16 @@ class sqlCommands:
         except Exception as e:
             print(str(e))
     
+    # This method reads every row of SQL DB
+    # Note: 'key' column in DB is only determinant for uniqueness
+    def sqlReadData(self,rowIndex,tableName):
+        try:
+            readData = ''' SELECT * FROM ''' + tableName + ''' WHERE key IS rowIndex=?'''
+            rowData = self.crsr.execute(readData, (rowIndex,))
+            # return rowData
+        except:
+            print("Something went wrong")
+
     # This method is used to close the sql connection
     
     def sqlCloseConnection(self):
