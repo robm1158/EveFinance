@@ -21,7 +21,7 @@ class sqlCommands:
     # This method will use the class vars to create a table determined by the
     # dataSort file. Modular enough to create any table in the DB that is required
 
-    def createSqlTable(self,tableName):
+    def createSqlOrderTable(self,tableName):
         try:
             createTable = """ CREATE TABLE """ + tableName +"""(
                 key INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,10 +59,12 @@ class sqlCommands:
     # This method reads every row of SQL DB
     # Note: 'key' column in DB is only determinant for uniqueness
     def sqlReadData(self,rowIndex,tableName):
+        
         try:
-            readData = ''' SELECT * FROM ''' + tableName + ''' WHERE key IS rowIndex=?'''
-            rowData = self.crsr.execute(readData, (rowIndex,))
-            # return rowData
+            readData = ''' SELECT * FROM ''' + tableName + ''' WHERE key IS ''' + str(rowIndex)
+            self.crsr.execute(readData)
+            rowData = self.crsr.fetchall()
+            return rowData
         except:
             print("Something went wrong")
 

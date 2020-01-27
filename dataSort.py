@@ -51,31 +51,31 @@ def sortData(conn,tableName,url):
     jsonString = json.dump(data,file)
     return("Finished Sorting Buys")
 
-def filterSqlData(sql):
-            # create table
-    createSqlTable("FilteredData")
+def filterSqlData(sql,table):
+    # create table
+
+    if (table == "buy"):   
+        sql.crsr.execute("SELECT * FROM trialBuy")
+    else:
+        sql.crsr.execute("SELECT * FROM trialSell")
 
     archives = sql.crsr.fetchall()
-    print("Number of entries: " + len(archives))
+    print("Number of entries: " + str(len(archives)))
 
     # Iterating over length of archives
     # Grabbing values in indexed row, putting in shit
-    for index in len(archives)
-        shit = sql.sqlReadData(index, newTable)
-
-            
-
-
-
+    for index in range(len(archives)):
+        data = sql.sqlReadData(index, "trialBuy")
+        print(data)
 
 
 #---------------------------------------------------------------------------
 
-sql = sqlUpdater.sqlCommands("D:\\Code\\EveFinance\\testing2.db")
-sql.createSqlTable("trialBuy")
-buyCheck = sortData(sql,"trialBuy","https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=buy&page=1&type_id=34")
-sql.createSqlTable("trialSell")
-sellCheck = sortData(sql,"trialSell","https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=sell&page=1&type_id=34")
-print(buyCheck)
-print(sellCheck)
+sql = sqlUpdater.sqlCommands("D:\\Code\\EveFinance\\buySell.db")
+sql.createSqlOrderTable("FilteredBuyData")
+filterSqlData(sql,"buy")
+#sql.createSqlOrderTableTable("trialBuy")
+#sql.createSqlOrderTableTable("trialSell")
+#sellCheck = sortData(sql,"trialSell","https://esi.evetech.net/latest/markets/10000002/orders/?datasource=tranquility&order_type=sell&page=1&type_id=34")
+
 sql.sqlCloseConnection()
