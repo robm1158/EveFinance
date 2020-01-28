@@ -52,16 +52,15 @@ def sortData(conn,tableName,url):
     return("Finished Sorting Buys")
 
 def filterSqlData(sql):
-            # create table
-    createSqlTable("FilteredData")
+    createSqlTable("FilteredData.db") # create table
 
     archives = sql.crsr.fetchall()
-    print("Number of entries: " + len(archives))
+    print("Number of entries: " + str(len(archives)))
 
     # Iterating over length of archives
     # Grabbing values in indexed row, putting in shit
     for index in len(archives)
-        shit = sql.sqlReadData(index, newTable)
+        shit = sql.sqlReadData(index, "FilteredData.db")
 
             
 
